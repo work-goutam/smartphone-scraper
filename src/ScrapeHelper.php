@@ -1,5 +1,5 @@
 <?php
-
+/*
 namespace App;
 
 use GuzzleHttp\Client;
@@ -16,3 +16,4 @@ class ScrapeHelper
         return new Crawler($response->getBody()->getContents(), $url);
     }
 }
+*/

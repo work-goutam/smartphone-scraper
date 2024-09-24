@@ -4,11 +4,32 @@
   "require": {
     "symfony/dom-crawler": "^5.2",
     "guzzlehttp/guzzle": "^7.2",
-    "symfony/css-selector": "^5.2"
+    "symfony/css-selector": "^5.2",
+    "spatie/data-transfer-object": "^3.9",
+    "spatie/laravel-enum": "^3.1"
   },
   "autoload": {
     "psr-4": {
       "App\\": "src/"
+    },
+    "files": [
+      "src/helper.php"
+    ]
+  },
+  "require-dev": {
+    "pestphp/pest": "^2.35",
+    "mockery/mockery": "^1.6",
+    "laravel/pint": "^1.17",
+    "phpstan/phpstan": "^1.12"
+  },
+  "scripts": {
+    "fix": "vendor/bin/pint",
+    "analyse": "vendor/bin/phpstan analyse",
+    "test": "vendor/bin/pest"
+  },
+  "config": {
+    "allow-plugins": {
+      "pestphp/pest-plugin": true
     }
   }
 }
