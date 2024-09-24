@@ -10,10 +10,6 @@ it('save output to a file', function () {
     // Create some Product DTO objects
     $product = new Product(identifier: '1234', title: 'Owsome Product', price: 10.99);
 
-    // echo '<pre>';
-    //      print_r($product->toArray());
-    //      exit;
-
     // Create a CrawlResult instance
     $crawlResult = CrawlResult::make((CrawlStatus::class)::completed());
 
