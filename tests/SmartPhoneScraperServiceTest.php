@@ -6,6 +6,7 @@ use App\Services\Scraper\CrawlResult;
 use App\Services\SmartPhoneScraperService;
 use App\Support\Collection;
 use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 
@@ -144,15 +145,15 @@ it('successfully runs the scraper and returns a completed CrawlResult', function
     $mockResponse->shouldReceive('getStatusCode')->andReturn(200);
     $mockResponse->shouldReceive('getBody')->andReturn($mockStream);
 
-    // Mock the Client and its get() method to return the mockResponse
+    // Mock the Client and its send() method to return the mockResponse
     $mockClient = \Mockery::mock(Client::class);
-    $mockClient->shouldReceive('get')->andReturn($mockResponse);
+    $mockClient->shouldReceive('send')->andReturn($mockResponse);
 
     // Create a SmartPhoneScraperService instance, passing in the mocked client
     $scraperService = new SmartPhoneScraperService($mockClient);
 
     // Run the scraper service's crawl() method
-    $result = $scraperService->crawl();
+    $result = $scraperService->crawl(Collection::make());
 
     // Assert that the returned result is a CrawlResult
     expect($result)->toBeInstanceOf(CrawlResult::class);
@@ -176,15 +177,15 @@ it('successfully runs the scraper and returns a stopped CrawlResult', function (
     $mockResponse->shouldReceive('getStatusCode')->andReturn(200);
     $mockResponse->shouldReceive('getBody')->andReturn($mockStream);
 
-    // Mock the Client and its get() method to return the mockResponse
+    // Mock the Client and its send() method to return the mockResponse
     $mockClient = \Mockery::mock(Client::class);
-    $mockClient->shouldReceive('get')->andReturn($mockResponse);
+    $mockClient->shouldReceive('send')->andReturn($mockResponse);
 
     // Create a SmartPhoneScraperService instance, passing in the mocked client
     $scraperService = new SmartPhoneScraperService($mockClient);
 
     // Run the scraper service's crawl() method
-    $result = $scraperService->crawl();
+    $result = $scraperService->crawl(Collection::make());
 
     // Assert that the returned result is a CrawlResult
     expect($result)->toBeInstanceOf(CrawlResult::class);
@@ -192,4 +193,21 @@ it('successfully runs the scraper and returns a stopped CrawlResult', function (
     // Assert that the status is stopped
     expect($result->status)->toBeInstanceOf(CrawlStatus::class);
     expect($result->status->isStopped())->toBeTrue();
+});
+
+it('retries on 429 and returns a valid response after retries', function () {
+
+    $client = \Mockery::mock(Client::class);
+    $client->shouldReceive('send')
+        ->times(2) // Expect 2 retries with 429
+        ->andReturn(new Response(429, ['Retry-After' => 1])); // Return 429 response for first three calls
+    $client->shouldReceive('send')
+        ->once() // Expect 1 successful call
+        ->andReturn(new Response(200, [], '<html>dummy content</html>'));
+
+    $crawler = (new SmartPhoneScraperService($client))->crawl(Collection::make());
+
+    expect($crawler->status->isStopped())->toBeTrue();
+    expect($crawler->status)->toBeInstanceOf(CrawlStatus::class);
+
 });

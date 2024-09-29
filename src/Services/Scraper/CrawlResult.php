@@ -15,6 +15,10 @@ final class CrawlResult
 
     public ?int $totalCount;
 
+    public ?Collection $config = null;
+
+    public bool $hasMorePage = false;
+
     public ResponseInterface $response;
 
     private function __construct(CrawlStatus $status, ?int $totalCount = null)
@@ -54,6 +58,26 @@ final class CrawlResult
     public function withResponse(ResponseInterface $response): CrawlResult
     {
         $this->response = $response;
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function withConfig(?Collection $config = null)
+    {
+        $this->config = $config;
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function withHasMorePage(bool $hasMorePage): CrawlResult
+    {
+        $this->hasMorePage = $hasMorePage;
 
         return $this;
     }

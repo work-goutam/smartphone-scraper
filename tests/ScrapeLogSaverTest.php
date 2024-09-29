@@ -18,7 +18,7 @@ it('save output to a file', function () {
 
     $jsonFile = 'dummy.json';
 
-    (new ScrapeLogSaver)->saveToFile($crawlResult, $jsonFile);
+    (new ScrapeLogSaver($crawlResult))->saveToFile($jsonFile);
     $content = file_get_contents($jsonFile);
 
     // Assert that the products count the expected input

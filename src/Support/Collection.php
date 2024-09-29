@@ -92,4 +92,20 @@ class Collection implements Arrayable
     {
         return count($this->items);
     }
+
+    /**
+     * Get an item from the collection by key.
+     *
+     * @param  int|string  $key
+     * @param  mixed  $default
+     * @return mixed
+     */
+    public function get($key, $default = null)
+    {
+        if (array_key_exists($key, $this->items)) {
+            return $this->items[$key];
+        }
+
+        return value($default);
+    }
 }

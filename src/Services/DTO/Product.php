@@ -23,4 +23,19 @@ final class Product extends AbstractDataTransferObject
     public ?string $shippingText = null;
 
     public ?string $shippingDate = null;
+
+    public function toArray(): array
+    {
+        return [
+            'title' => $this->title,
+            'price' => $this->price,
+            'imageUrl' => $this->imageUrl,
+            'capacityMB' => $this->capacityMB,
+            'colour' => $this->colour,
+            'availabilityText' => $this->availabilityText,
+            'isAvailable' => $this->isAvailable,
+            'shippingText' => $this->shippingText,
+            'shippingDate' => $this->shippingDate,
+        ];
+    }
 }
